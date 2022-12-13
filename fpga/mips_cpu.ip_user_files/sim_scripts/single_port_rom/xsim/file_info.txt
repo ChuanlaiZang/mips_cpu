@@ -1,0 +1,2 @@
+single_port_rom.v,verilog,xil_defaultlib,../../../../../src/ip/single_port_rom/sim/single_port_rom.v,
+glbl.v,Verilog,xil_defaultlib,glbl.v
