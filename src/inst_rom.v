@@ -8,7 +8,7 @@ module inst_rom(
     );
     wire [31:0] InsData;
 
-    single_port_rom inst_rom (
+    inst_ram inst_rom (
         .clka(clk),    // input wire clka
         .ena(ena),      // input wire ena
         .addra({{16{ins[15]}},ins[15:0]}),  // input wire [9 : 0] addra 
