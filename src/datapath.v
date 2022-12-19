@@ -1,3 +1,6 @@
+//六条指令
+//addu, subu, ori, lw, sw, beq
+
 module datapath(
 	input wire clk,rst,
 	input wire memtoreg,pcsrc,
@@ -17,7 +20,7 @@ module datapath(
 	wire[31:0] srca,srcb;
 	wire[31:0] result;
 
-	flopr #(32) pcreg(clk,rst,pcnext,pc);
+	pc #(32) pcreg(clk,rst,pcnext,pc);
 	adder pcadd1(pc,32'b100,pcplus4);
 	sl2 immsh(signimm,signimmsh);
 	adder pcadd2(pcplus4,signimmsh,pcbranch);
