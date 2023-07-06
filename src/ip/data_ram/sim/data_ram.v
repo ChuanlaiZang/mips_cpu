@@ -55,26 +55,31 @@
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module data_ram (
   clka,
+  rsta,
   ena,
   wea,
   addra,
   dina,
-  douta
+  douta,
+  rsta_busy
 );
 
 (* X_INTERFACE_INFO = "xilinx.com:interface:bram:1.0 BRAM_PORTA CLK" *)
 input wire clka;
+(* X_INTERFACE_INFO = "xilinx.com:interface:bram:1.0 BRAM_PORTA RST" *)
+input wire rsta;
 (* X_INTERFACE_INFO = "xilinx.com:interface:bram:1.0 BRAM_PORTA EN" *)
 input wire ena;
 (* X_INTERFACE_INFO = "xilinx.com:interface:bram:1.0 BRAM_PORTA WE" *)
 input wire [3 : 0] wea;
 (* X_INTERFACE_INFO = "xilinx.com:interface:bram:1.0 BRAM_PORTA ADDR" *)
-input wire [9 : 0] addra;
+input wire [31 : 0] addra;
 (* X_INTERFACE_INFO = "xilinx.com:interface:bram:1.0 BRAM_PORTA DIN" *)
 input wire [31 : 0] dina;
 (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME BRAM_PORTA, MEM_SIZE 8192, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE OTHER, READ_LATENCY 1" *)
 (* X_INTERFACE_INFO = "xilinx.com:interface:bram:1.0 BRAM_PORTA DOUT" *)
 output wire [31 : 0] douta;
+output wire rsta_busy;
 
   blk_mem_gen_v8_4_2 #(
     .C_FAMILY("artix7"),
@@ -84,7 +89,7 @@ output wire [31 : 0] douta;
     .C_AXI_TYPE(1),
     .C_AXI_SLAVE_TYPE(0),
     .C_USE_BRAM_BLOCK(0),
-    .C_ENABLE_32BIT_ADDRESS(0),
+    .C_ENABLE_32BIT_ADDRESS(1),
     .C_CTRL_ECC_ALGO("NONE"),
     .C_HAS_AXI_ID(0),
     .C_AXI_ID_WIDTH(4),
@@ -95,9 +100,9 @@ output wire [31 : 0] douta;
     .C_LOAD_INIT_FILE(0),
     .C_INIT_FILE_NAME("no_coe_file_loaded"),
     .C_INIT_FILE("data_ram.mem"),
-    .C_USE_DEFAULT_DATA(1),
+    .C_USE_DEFAULT_DATA(0),
     .C_DEFAULT_DATA("0"),
-    .C_HAS_RSTA(0),
+    .C_HAS_RSTA(1),
     .C_RST_PRIORITY_A("CE"),
     .C_RSTRAM_A(0),
     .C_INITA_VAL("0"),
@@ -110,7 +115,7 @@ output wire [31 : 0] douta;
     .C_READ_WIDTH_A(32),
     .C_WRITE_DEPTH_A(1024),
     .C_READ_DEPTH_A(1024),
-    .C_ADDRA_WIDTH(10),
+    .C_ADDRA_WIDTH(32),
     .C_HAS_RSTB(0),
     .C_RST_PRIORITY_B("CE"),
     .C_RSTRAM_B(0),
@@ -124,7 +129,7 @@ output wire [31 : 0] douta;
     .C_READ_WIDTH_B(32),
     .C_WRITE_DEPTH_B(1024),
     .C_READ_DEPTH_B(1024),
-    .C_ADDRB_WIDTH(10),
+    .C_ADDRB_WIDTH(32),
     .C_HAS_MEM_OUTPUT_REGS_A(1),
     .C_HAS_MEM_OUTPUT_REGS_B(0),
     .C_HAS_MUX_OUTPUT_REGS_A(0),
@@ -147,14 +152,14 @@ output wire [31 : 0] douta;
     .C_EN_RDADDRB_CHG(0),
     .C_EN_DEEPSLEEP_PIN(0),
     .C_EN_SHUTDOWN_PIN(0),
-    .C_EN_SAFETY_CKT(0),
+    .C_EN_SAFETY_CKT(1),
     .C_DISABLE_WARN_BHV_RANGE(0),
     .C_COUNT_36K_BRAM("1"),
     .C_COUNT_18K_BRAM("0"),
     .C_EST_POWER_SUMMARY("Estimated Power for IP     :     2.96495 mW")
   ) inst (
     .clka(clka),
-    .rsta(1'D0),
+    .rsta(rsta),
     .ena(ena),
     .regcea(1'D0),
     .wea(wea),
@@ -166,7 +171,7 @@ output wire [31 : 0] douta;
     .enb(1'D0),
     .regceb(1'D0),
     .web(4'B0),
-    .addrb(10'B0),
+    .addrb(32'B0),
     .dinb(32'B0),
     .doutb(),
     .injectsbiterr(1'D0),
@@ -178,7 +183,7 @@ output wire [31 : 0] douta;
     .sleep(1'D0),
     .deepsleep(1'D0),
     .shutdown(1'D0),
-    .rsta_busy(),
+    .rsta_busy(rsta_busy),
     .rstb_busy(),
     .s_aclk(1'H0),
     .s_aresetn(1'D0),

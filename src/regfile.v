@@ -1,19 +1,28 @@
+//寄存器堆
 module regfile(
 	input wire clk,
-	input wire we3,
-	input wire[4:0] ra1,ra2,wa3,
-	input wire[31:0] wd3,
-	output wire[31:0] rd1,rd2
+	input wire rst;
+	input wire wena,
+	input wire[4:0] rw,ra,rb,		//读写控制信号，选中对应编号的寄存器将内容放入busA,busB,busW
+	input wire[31:0] RegWriDate,	//写总线
+	output wire[31:0] busA,busB		//输出总线
     );
 
-	reg [31:0] rf[31:0];
+	reg [31:0] rf[31:0];`//32个32位的寄存器
 
+	//寄存器的写受时钟控制
 	always @(posedge clk) begin
-		if(we3) begin
-			 rf[wa3] <= wd3;
+		if (rst) begin
+			for (i = 1; i<32; i=i+1 ) begin
+				rf[i] <= 0;
+			end
+		end
+		if(wena) begin
+			 rf[rw] <= RegWriDate;
 		end
 	end
-
-	assign rd1 = (ra1 != 0) ? rf[ra1] : 0;
-	assign rd2 = (ra2 != 0) ? rf[ra2] : 0;
+	
+	//寄存器堆的读不受时钟控制
+	assign busA = (ra != 0) ? rf[ra] : 0;
+	assign busB = (rb != 0) ? rf[rb] : 0;
 endmodule
