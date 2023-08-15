@@ -1,5 +1,8 @@
 # 单周期指令 MIPS32CPU
 设计框图具体设计见文档
+
+# 现在的框架为
+![image](./pic/MIPS_CPU.png)
 ## 实现指令（其中指令对应op为序号）
 
 1. `add rd,rs,rt` `R[rs]+R[rt]->R[rd]`
